@@ -453,10 +453,9 @@ def main():
     chat_container = st.empty()
 
     def draw_chat(loading=False):
-        html = '<div class="chat-container">'
         for msg in st.session_state.chat_history:
             if msg["role"] == "user":
-                html += f'<div class="u-msg"><div class="u-bub">{msg["content"]}</div></div>'
+                st.markdown(f'<div class="u-msg"><div class="u-bub">{msg["content"]}</div></div>', unsafe_allow_html=True)
             else:
                 # 处理 Markdown 格式
                 content = msg["content"]
@@ -464,14 +463,17 @@ def main():
                 content = content.replace('**一、', '\n\n**一、')
                 content = content.replace('**二、', '\n\n**二、')
                 content = content.replace('**三、', '\n\n**三、')
-                content = content.replace('**四、', '\n\n**四、')
+                content = content.replace('**四、', '\n\n**4、')
                 content = content.replace('**五、', '\n\n**五、')
                 content = content.replace('**六、', '\n\n**六、')
-                html += f'<div class="a-msg"><div class="a-av">🚬</div><div class="a-bub">{content}</div></div>'
+                # 使用Streamlit的Markdown渲染器处理内容
+                st.markdown(f'<div class="a-msg"><div class="a-av">🚬</div><div class="a-bub" style="display:inline-block;">', unsafe_allow_html=True)
+                st.markdown(content)
+                st.markdown('</div></div>', unsafe_allow_html=True)
+        
         if loading:
-            html += '<div class="a-msg"><div class="a-av">🚬</div><div class="a-bub">正在分析数据，请稍候……</div></div>'
-        html += '</div>'
-        chat_container.markdown(html, unsafe_allow_html=True)
+            st.markdown('<div class="a-msg"><div class="a-av">🚬</div><div class="a-bub">正在分析数据，请稍候……</div></div>', unsafe_allow_html=True)
+
 
     # 初始空状态
     if not st.session_state.chat_history:
